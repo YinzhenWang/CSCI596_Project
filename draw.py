@@ -21,7 +21,7 @@ def draw_text(text, x, y):
     image = create_text_image(text)
     # 将PIL图像转换为可以用作OpenGL纹理的数据
     text_data = image.tobytes("raw", "RGBA", 0, -1)
-    glColor4f(1.0, 0.0, 0.0, 1.0)  # 红色
+    glColor4f(0, 0.0, 0.0, 1.0)  # 红色
 
     # 生成纹理
     texture = glGenTextures(1)
@@ -49,13 +49,14 @@ def get_text_width(text):
 def get_text_size(text):
     return font.getsize(text)
 
-def initialize_window():
+
+def initialize_window(model_name, layer, head):
     # 初始化GLFW
     if not glfw.init():
         raise Exception("glfw can not be initialized!")
 
     # 创建GLFW窗口
-    window = glfw.create_window(720, 720, "BERT Attention Visualization", None, None)
+    window = glfw.create_window(960, 720, f"{model_name} Attention Visualization (layer:{layer}, head:{head})", None, None)
 
     # 检查窗口是否成功创建
     if not window:
@@ -66,21 +67,23 @@ def initialize_window():
     glfw.make_context_current(window)
     
     # 设置视口和投影
-    glViewport(0, 0, 720, 720)
+    glViewport(0, 0, 1920, 1440)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
+
     glOrtho(0, 720, 0, 720, -1, 1)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    
+
     # 设置背景颜色
-    glClearColor(0.1, 0.1, 0.1, 1)
+    glClearColor(1,1,1,1)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     return window
 
 def draw_line(x1, y1, x2, y2, weight):
+    glColor4f(1.0, 0.0, 0.0, weight)
     glLineWidth(max(weight * 10, 1))  # 线宽基于权重，最小为1
     glBegin(GL_LINES)
     glVertex2f(x1, y1)
@@ -95,8 +98,8 @@ def render(window, tokens, attention_matrix):
 
         # 设置文本的起始位置
         x_offset = 50  # x轴偏移量
-        top_row_y = 100  # 顶行y坐标
-        bottom_row_y = 620  # 底行y坐标
+        top_row_y = 50  # 顶行y坐标
+        bottom_row_y = 670  # 底行y坐标
 
         token_positions = {}
 
@@ -107,19 +110,20 @@ def render(window, tokens, attention_matrix):
             token_positions[i] = (x_offset + text_width / 2, top_row_y + text_height / 2)  # 存储顶行文本中心位置
             draw_text(token, x_offset, bottom_row_y)  # 绘制底行
             token_positions[i + len(tokens)] = (x_offset + text_width / 2, bottom_row_y - text_height / 2)  # 存储底行文本中心位置
-            x_offset += text_width + 20  # 更新x轴偏移量
+            x_offset += text_width + 25  # 更新x轴偏移量
         
         # 绘制注意力矩阵
         for i, token1 in enumerate(tokens):
             for j, token2 in enumerate(tokens):
                 weight = attention_matrix[i][j]
                 # 设置颜色基于权重（您可能需要调整颜色以匹配您的具体权重范围）
-                glColor3f(weight, weight, weight)  # 假设权重在0到1之间
+                # glColor3f(1, 0, 1-weight)  # 假设权重在0到1之间
                 # 获取每个token的中心位置
                 start_x, start_y = token_positions[i]
                 end_x, end_y = token_positions[j + len(tokens)]
                 draw_line(start_x, start_y, end_x, end_y, weight)
         
+            
 
         glfw.swap_buffers(window)
 

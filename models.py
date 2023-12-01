@@ -2,7 +2,7 @@ from transformers import BertTokenizer, BertModel
 import numpy as np
 
 def get_model(name):
-    print(name)
+    # print(name)
     try:
         tokenizer = BertTokenizer.from_pretrained(name)
         model = BertModel.from_pretrained(name)

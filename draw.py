@@ -3,6 +3,7 @@ from OpenGL.GL import *
 import numpy as np
 
 from PIL import Image, ImageDraw, ImageFont
+from datetime import datetime
 
 # 创建一个字体对象，这里使用默认的字体和大小
 font = ImageFont.load_default()
@@ -50,12 +51,14 @@ def get_text_size(text):
     return font.getsize(text)
 
 
-def initialize_window(model_name, layer, head):
+def initialize_window(model_name, layer, head, open_window):
     # 初始化GLFW
     if not glfw.init():
         raise Exception("glfw can not be initialized!")
 
     # 创建GLFW窗口
+    if not open_window:
+        glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     window = glfw.create_window(960, 720, f"{model_name} Attention Visualization (layer:{layer}, head:{head})", None, None)
 
     # 检查窗口是否成功创建
@@ -128,3 +131,57 @@ def render(window, tokens, attention_matrix):
         glfw.swap_buffers(window)
 
     glfw.terminate()
+
+def render_image(window, tokens, attention_matrix):
+    glfw.poll_events()
+
+    glClear(GL_COLOR_BUFFER_BIT)
+
+    # 设置文本的起始位置
+    x_offset = 50  # x轴偏移量
+    top_row_y = 50  # 顶行y坐标
+    bottom_row_y = 670  # 底行y坐标
+
+    token_positions = {}
+
+    # 先绘制所有的tokens并存储位置
+    for i, token in enumerate(tokens):
+        text_width, text_height = get_text_size(token)
+        draw_text(token, x_offset, top_row_y)  # 绘制顶行
+        token_positions[i] = (x_offset + text_width / 2, top_row_y + text_height / 2)  # 存储顶行文本中心位置
+        draw_text(token, x_offset, bottom_row_y)  # 绘制底行
+        token_positions[i + len(tokens)] = (x_offset + text_width / 2, bottom_row_y - text_height / 2)  # 存储底行文本中心位置
+        x_offset += text_width + 25  # 更新x轴偏移量
+    
+    # 绘制注意力矩阵
+    for i, token1 in enumerate(tokens):
+        for j, token2 in enumerate(tokens):
+            weight = attention_matrix[i][j]
+            # 设置颜色基于权重（您可能需要调整颜色以匹配您的具体权重范围）
+            # glColor3f(1, 0, 1-weight)  # 假设权重在0到1之间
+            # 获取每个token的中心位置
+            start_x, start_y = token_positions[i]
+            end_x, end_y = token_positions[j + len(tokens)]
+            draw_line(start_x, start_y, end_x, end_y, weight)
+    
+        
+
+    glfw.swap_buffers(window)
+
+    width, height = glfw.get_framebuffer_size(window)
+    glReadBuffer(GL_FRONT)
+    pixels = glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE)
+
+    # Create a PIL Image from the pixel data
+    image = Image.frombytes("RGB", (width, height), pixels)
+
+    # Flip the image vertically (OpenGL has the origin at the bottom-left)
+    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+    # Save the image to a file
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    image_name = f"rendered_image_{timestamp}.png"
+    image.save(image_name)
+    glfw.terminate()
+    
+    return image, image_name

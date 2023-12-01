@@ -11,8 +11,8 @@ The primary goal of this project is to create an interactive web application tha
 
 ## Expected Results
 1. Dashboard
-![dashboard](/resource/dashboard.JPG)
+![dashboard](/resource/dashboard.jpg)
 2. User inputs
-![inputs](/resource/inputs.JPG)
+![inputs](/resource/inputs.jpg)
 3. Attention Visualization
-![output](/resource/output.JPG)
+![output](/resource/output.jpg)

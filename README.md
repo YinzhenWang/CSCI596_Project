@@ -16,3 +16,11 @@ The primary goal of this project is to create an interactive web application tha
 ![inputs](/resource/inputs.jpg)
 3. Attention Visualization
 ![output](/resource/output.jpg)
+
+## Reproduce
+### Prerequisite
+```bash
+pip install -r requirements.txt
+```
+
+### Main Entry

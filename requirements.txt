@@ -1,0 +1,11 @@
+streamlit
+transformers
+numpy
+glfw
+gradio
+ipykernel
+torch
+torchvision
+torchaudio
+PyOpenGL
+PyOpenGL_accelerate

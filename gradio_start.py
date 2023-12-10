@@ -30,7 +30,7 @@ demo = gr.Interface(
     inputs = [
         gr.Textbox(label="Text"),
         gr.Dropdown(
-            ["bert-base-uncased", "dog", "bird"], label="Model name", info="choose a number"
+            ["bert-base-uncased", "dslim/bert-base-NER"], label="Model name", info="choose a model"
         ),
         gr.Slider(0, 11, step=1, value=11, label="layer", info="Choose between 0 and 11"),
         gr.Slider(0, 11, step=1, value=4, label="head", info="Choose between 0 and 11"),

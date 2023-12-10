@@ -59,7 +59,8 @@ def initialize_window(model_name, layer, head, open_window):
     # 创建GLFW窗口
     if not open_window:
         glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
-    window = glfw.create_window(960, 720, f"{model_name} Attention Visualization (layer:{layer}, head:{head})", None, None)
+    # window = glfw.create_window(960, 720, f"{model_name} Attention Visualization (layer:{layer}, head:{head})", None, None)
+    window = glfw.create_window(1920, 1440, f"{model_name} Attention Visualization (layer:{layer}, head:{head})", None, None)
 
     # 检查窗口是否成功创建
     if not window:
@@ -87,7 +88,24 @@ def initialize_window(model_name, layer, head, open_window):
 
 def draw_line(x1, y1, x2, y2, weight):
     glColor4f(1.0, 0.0, 0.0, weight)
-    glLineWidth(max(weight * 10, 1))  # 线宽基于权重，最小为1
+
+    # Normalize the weight to be between 0 and 1
+    weight = (weight - 0.1) / 0.9
+
+    # glLineWidth(max(weight * 10, 1))  # 线宽基于权重，最小为1
+
+    # in the above line, we use * 10, which is a linear transformation
+    # to transfor the weight to the line width
+
+    # Now, we want to use a non-linear transformation to transform the weight to the line width
+    # We use the following function:
+    # f(x) = 1 + 9 * x^2
+
+    glLineWidth(min(1 + 9 * weight * weight, 5))
+
+    # Make the line smoother
+    glEnable(GL_LINE_SMOOTH)
+
     glBegin(GL_LINES)
     glVertex2f(x1, y1)
     glVertex2f(x2, y2)

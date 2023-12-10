@@ -1,0 +1,9 @@
+streamlit
+transformers
+numpy
+glfw
+gradio
+ipykernel
+PyOpenGL
+PyOpenGL_accelerate
+Pillow==9.5.0

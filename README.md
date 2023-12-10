@@ -11,8 +11,26 @@ The primary goal of this project is to create an interactive web application tha
 
 ## Results
 1. Dashboard
-![dashboard](/resource/dashboard.jpg)
+![dashboard](./resources/dashboard.jpg)
 2. User Inputs
-![inputs](/resource/inputs.jpg)
+![inputs](./resources/inputs.jpg)
 3. Attention Visualization
-![output](/resource/output.jpg)
+![output](./resources/outputs.jpg)
+
+## Reproduce
+### Prerequisite
+```bash
+# Windows
+# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 # Windows
+
+# Linux
+# pip3 install torch torchvision torchaudio
+```
+```bash
+pip install -r requirements.txt
+```
+
+### Main Entry
+```bash
+python gradio_start.py
+```

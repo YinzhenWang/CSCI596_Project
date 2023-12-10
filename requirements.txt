@@ -4,8 +4,6 @@ numpy
 glfw
 gradio
 ipykernel
-torch
-torchvision
-torchaudio
 PyOpenGL
 PyOpenGL_accelerate
+Pillow==9.5.0
